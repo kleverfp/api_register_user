@@ -41,6 +41,15 @@ let UserRepository = class UserRepository extends typeorm_1.Repository {
     async hashPassword(password, salt) {
         return bcrypt.hash(password, salt);
     }
+    async checkCredentials(credentialsDto) {
+        const { email, password } = credentialsDto;
+        const user = this.findOne({ email, status: true });
+        if (user && ((await user).checkPassword(password))) {
+            return user;
+        }
+        else
+            return null;
+    }
 };
 UserRepository = __decorate([
     (0, typeorm_1.EntityRepository)(user_entity_1.User)
